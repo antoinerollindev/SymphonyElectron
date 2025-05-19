@@ -69,6 +69,7 @@ import { presenceStatus } from './presence-status-handler';
 import { appStats } from './stats';
 import { presenceStatusStore, sdaMenuStore } from './stores/index';
 import { voiceHandler } from './voice-handler';
+import { mcpClient } from './ai/mcp-client-handler';
 
 // Swift search API
 let swiftSearchInstance;
@@ -603,6 +604,10 @@ ipcMain.handle(
     switch (arg.cmd) {
       case apiCmds.getCurrentOriginUrl:
         return windowHandler.getMainWindow()?.origin;
+      case apiCmds.askSymAi:
+        // TODO call MCP client
+        logger.info('Yup got here');
+        return mcpClient.generateResponse(arg.symAiQuestion);
       case apiCmds.showScreenSharePermissionDialog: {
         const focusedWindow = BrowserWindow.getFocusedWindow();
         if (focusedWindow && !focusedWindow.isDestroyed()) {
@@ -666,6 +671,7 @@ ipcMain.handle(
           arg.sessionContextGroupId,
         );
       default:
+        logger.info('not found', JSON.stringify(arg));
         break;
     }
     return;

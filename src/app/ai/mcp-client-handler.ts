@@ -31,7 +31,7 @@ export class MCPClient {
   private threadId: string;
 
   // TODO - This could come from a config somewhere? SDA Settings?
-  constructor(modelName: string = 'qwen3:8b') {
+  constructor(modelName: string = 'qwen3:latest') {
     this.model = new ChatOllama({
       // Local ollama url
       baseUrl: 'http://localhost:11434',
@@ -132,6 +132,7 @@ export class MCPClient {
    * This is the function we need to call whenever the user says "Hey Symphony" - or triggers the assistant, no matter how
    */
   public async generateResponse(userInput: string): Promise<string> {
+    console.log('in mcp client');
     if (!this.agent) {
       throw new Error('MCP Client not initialized. Call initialize() first.');
     }
@@ -155,3 +156,6 @@ export class MCPClient {
     }
   }
 }
+
+export const mcpClient = new MCPClient();
+mcpClient.initialize();
