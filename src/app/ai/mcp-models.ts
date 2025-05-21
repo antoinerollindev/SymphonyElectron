@@ -53,3 +53,18 @@ export const isFunctionCallResponse = (
 ): r is IMCPFunctionCallResponse => r.type === 'function_call_response';
 export const isErrorResponse = (r: MCPResponse): r is IMCPErrorResponse =>
   r.type === 'error';
+
+export interface RegistryServiceTool extends MCPTool {
+  // method name in the registry's service. Defaults to tool name if it's not provided
+  methodName?: string;
+}
+
+export interface RegistryServiceTools {
+  symbol: string;
+  tools: RegistryServiceTool[];
+}
+
+export interface ToolAndHandler {
+  tool: MCPTool;
+  handler: (parameters: Record<string, any>) => any;
+}

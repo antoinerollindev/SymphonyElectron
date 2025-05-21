@@ -99,6 +99,9 @@ export enum apiCmds {
   openfinRemoveFromContextGroup = 'openfin-remove-from-context-group',
   openfinGetClientInfo = 'openfin-get-client-info',
   openfinSetContext = 'openfin-set-context',
+  // Sym AI commands
+  askSymAi = 'ask-sym-ai',
+  registryResponse = 'registry-response',
 }
 
 export enum apiName {
@@ -180,6 +183,8 @@ export interface IApiArgs {
   target: any;
   isMiniViewFeatureEnabled: boolean;
   isMiniViewEnabled: boolean;
+  symAiQuestion: string;
+  result: string;
 }
 
 export type Themes = 'light' | 'dark';
