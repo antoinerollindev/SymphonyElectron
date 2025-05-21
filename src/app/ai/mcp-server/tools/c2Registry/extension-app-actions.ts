@@ -1,8 +1,8 @@
-import { MCPTool, RegistryServiceTools } from '../../../mcp-models';
+import { IMCPTool, IRegistryServiceTools } from '../../../mcp-models';
 
 const symbol = 'IExtensionAppService';
 
-const tools: MCPTool[] = [
+const tools: IMCPTool[] = [
   {
     name: 'openTradingViewChart',
     description: 'Opens TradingView chart view about the ticker',
@@ -48,7 +48,7 @@ const tools: MCPTool[] = [
   },
 ];
 
-export const registryTools: RegistryServiceTools = {
+export const registryTools: IRegistryServiceTools = {
   symbol,
   tools,
 };

@@ -8,10 +8,10 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatOllama } from '@langchain/ollama';
 
 import {
-  isFunctionCallResponse,
+  IMCPTool,
   isErrorResponse,
+  isFunctionCallResponse,
   MCPResponse,
-  MCPTool,
 } from './mcp-models';
 import { McpServer } from './mcp-server/mcp-server';
 
@@ -32,7 +32,7 @@ export class MCPClient {
   private threadId: string;
 
   // TODO - This could come from a config somewhere? SDA Settings?
-  constructor(modelName: string = 'qwen3:latest') {
+  constructor(modelName: string = 'qwen3:8b') {
     this.model = new ChatOllama({
       // Local ollama url
       baseUrl: 'http://localhost:11434',
@@ -70,10 +70,38 @@ export class MCPClient {
   }
 
   /**
+   * Generate a response to user input
+   * This is the function we need to call whenever the user says "Hey Symphony" - or triggers the assistant, no matter how
+   */
+  public async generateResponse(userInput: string): Promise<string> {
+    if (!this.agent) {
+      throw new Error('MCP Client not initialized. Call initialize() first.');
+    }
+
+    try {
+      // Add the new user message
+      const messages = [{ role: 'user', content: userInput }];
+
+      // Invoke the graph
+      const result = await this.agent.invoke(
+        {
+          messages,
+        },
+        { configurable: { thread_id: this.threadId } },
+      );
+      const responseMessage = result.messages[result.messages.length - 1];
+      return responseMessage.content;
+    } catch (error) {
+      logger.error('Error generating response:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Convert MCP tools to LangChain StructuredTools
    */
   private async createLangChainTools(
-    mcpTools: MCPTool[],
+    mcpTools: IMCPTool[],
   ): Promise<StructuredToolInterface[]> {
     return mcpTools.map((_tool) => {
       return tool(
@@ -125,36 +153,7 @@ export class MCPClient {
         );
       }
     } catch (error) {
-      console.error(`Error calling MCP function ${functionName}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Generate a response to user input
-   * This is the function we need to call whenever the user says "Hey Symphony" - or triggers the assistant, no matter how
-   */
-  public async generateResponse(userInput: string): Promise<string> {
-    console.log('in mcp client');
-    if (!this.agent) {
-      throw new Error('MCP Client not initialized. Call initialize() first.');
-    }
-
-    try {
-      // Add the new user message
-      const messages = [{ role: 'user', content: userInput }];
-
-      // Invoke the graph
-      const result = await this.agent.invoke(
-        {
-          messages,
-        },
-        { configurable: { thread_id: this.threadId } },
-      );
-      const responseMessage = result.messages[result.messages.length - 1];
-      return responseMessage.content;
-    } catch (error) {
-      console.error('Error generating response:', error);
+      logger.error(`Error calling MCP function ${functionName}:`, error);
       throw error;
     }
   }

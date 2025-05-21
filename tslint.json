@@ -50,6 +50,7 @@
       "check-type",
       "check-module"
     ],
+    "no-submodule-imports": [true, "@langchain"],
     "completed-docs": [true, "functions", "methods"]
   }
 }

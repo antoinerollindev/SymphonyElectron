@@ -1,5 +1,5 @@
 import { logger } from '../../../../../common/logger';
-import { ToolAndHandler } from '../../../mcp-models';
+import { IToolAndHandler } from '../../../mcp-models';
 
 const tool = {
   name: 'getWeather',
@@ -16,7 +16,12 @@ const tool = {
   },
 };
 
-async function handler(parameters: any): Promise<any> {
+/**
+ * handler for the tool
+ * @param parameters
+ * @returns
+ */
+const handler = async (parameters: any) => {
   // Demo weather function - in a real implementation you'd use a weather API
   // This is a mock implementation
   const location = parameters?.location || 'Unknown';
@@ -35,9 +40,9 @@ async function handler(parameters: any): Promise<any> {
     humidity: `${Math.floor(Math.random() * 60) + 30}%`,
     timestamp: new Date().toISOString(),
   };
-}
+};
 
-export const toolAndHandler: ToolAndHandler = {
+export const toolAndHandler: IToolAndHandler = {
   tool,
   handler,
 };
