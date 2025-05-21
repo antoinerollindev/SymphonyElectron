@@ -101,6 +101,7 @@ export enum apiCmds {
   openfinSetContext = 'openfin-set-context',
   // Sym AI commands
   askSymAi = 'ask-sym-ai',
+  registryResponse = 'registry-response',
 }
 
 export enum apiName {
@@ -183,6 +184,7 @@ export interface IApiArgs {
   isMiniViewFeatureEnabled: boolean;
   isMiniViewEnabled: boolean;
   symAiQuestion: string;
+  result: string;
 }
 
 export type Themes = 'light' | 'dark';

@@ -70,6 +70,7 @@ import { appStats } from './stats';
 import { presenceStatusStore, sdaMenuStore } from './stores/index';
 import { voiceHandler } from './voice-handler';
 import { mcpClient } from './ai/mcp-client-handler';
+import { c2RegistryHandler } from './c2-registry.handler';
 
 // Swift search API
 let swiftSearchInstance;
@@ -575,6 +576,14 @@ ipcMain.on(
 
         helpMenu.setValue(helpCenter);
         break;
+      // maybe later
+      // case apiCmds.registryResponse:
+      //   c2RegistryHandler.resolveRegistryResponse(
+      //     arg.id,
+      //     arg.result,
+      //     arg.reason,
+      //   );
+      //   break;
       default:
         break;
     }

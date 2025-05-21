@@ -1527,6 +1527,41 @@ local.ipcRenderer.on(
   },
 );
 
+// Maybe later
+// local.ipcRenderer.on(
+//   'registry-call',
+//   async (
+//     _evt: Event,
+//     id: number,
+//     symbol: string,
+//     methodName: string,
+//     args: any[] = [],
+//   ) => {
+//     try {
+//       const result = await (window as any).registry
+//         .get(symbol)
+//         [methodName]?.(...args);
+//       ipcRenderer.send(apiName.symphonyApi, {
+//         cmd: apiCmds.registryResponse,
+//         id,
+//         result,
+//       });
+//     } catch (error) {
+//       console.error(
+//         `Failed to perform registry call on ${symbol}.${methodName}(${args
+//           .map((a) => JSON.stringify(a))
+//           .join(',')})`,
+//         JSON.stringify(error),
+//       );
+//       ipcRenderer.send(apiName.symphonyApi, {
+//         cmd: apiCmds.registryResponse,
+//         id,
+//         reason: 'Failed to perform registry call',
+//       });
+//     }
+//   },
+// );
+
 local.ipcRenderer.on(
   'openfin-disconnection',
   (_event: Event, disconnectionEvent) => {
