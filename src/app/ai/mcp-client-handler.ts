@@ -13,9 +13,10 @@ import {
   MCPResponse,
   MCPTool,
 } from './mcp-models';
-import { McpServer } from './mcp-server';
+import { McpServer } from './mcp-server/mcp-server';
 
 import { logger } from '../../common/logger';
+import { initMcpServer } from './mcp-server';
 
 /**
  * This is the MCP client, it will be responsible for
@@ -48,6 +49,8 @@ export class MCPClient {
   public async initialize(): Promise<void> {
     logger.info(`Discovering MCP capabilities from local server `);
     try {
+      initMcpServer();
+
       // Perform local discovery to get available tools
       const localToolsResponse = McpServer.discoverTools();
 
