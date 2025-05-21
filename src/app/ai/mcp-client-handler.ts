@@ -37,6 +37,7 @@ export class MCPClient {
       // Local ollama url
       baseUrl: 'http://localhost:11434',
       model: modelName,
+      verbose: true,
     });
     // One thread per session - in memory
     // Check if we can link that the the user id?

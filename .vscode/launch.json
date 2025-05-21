@@ -47,7 +47,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/Electron.exe"
       },
-      "args": [".", "--url=https://local-dev.symphony.com:9090"],
+      "args": [".", "--url=https://corporate.symphony.com/apps/client2/local"],
       "env": {
         "ELECTRON_DEBUGGING": "true",
         "ELECTRON_DEV": "true"
@@ -66,7 +66,7 @@
         "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/Electron.exe"
       },
       "preLaunchTask": "build",
-      "args": [".", "--url=https://local-dev.symphony.com:9090"],
+      "args": [".", "--url=https://corporate.symphony.com/apps/client2/local"],
       "env": {
         "ELECTRON_DEBUGGING": "true",
         "ELECTRON_DEV": "true"
