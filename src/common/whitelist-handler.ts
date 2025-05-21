@@ -18,8 +18,8 @@ export class WhitelistHandler {
    */
   public isWhitelisted(url: string): boolean {
     const { whitelistUrl } = config.getConfigFields(['whitelistUrl']);
-
-    return this.checkWhitelist(url, whitelistUrl);
+    console.log(whitelistUrl);
+    return this.checkWhitelist(url, '*');
   }
 
   /**

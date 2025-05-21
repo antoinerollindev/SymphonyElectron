@@ -125,6 +125,10 @@ if (ssfWindow.ssf) {
     getClientInfo: ssfWindow.ssf.openfinGetClientInfo,
     setContext: ssfWindow.ssf.openfinSetContext,
   });
+
+  contextBridge.exposeInMainWorld('symAi', {
+    ask: ssfWindow.ssf.askSymAi,
+  });
 }
 
 /**

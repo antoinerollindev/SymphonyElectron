@@ -1181,6 +1181,13 @@ export class SSFApi {
     });
   }
 
+  public async askSymAi(symAiQuestion: string) {
+    return ipcRenderer.invoke(apiName.symphonyApi, {
+      cmd: apiCmds.askSymAi,
+      symAiQuestion,
+    });
+  }
+
   /**
    * Registers a callback function to be executed when the mini view state changes.
    *
