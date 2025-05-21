@@ -1,7 +1,7 @@
 import {
-  IMCPFunctionCallRequest,
   IMCPDiscoveryResponse,
-  MCPTool,
+  IMCPFunctionCallRequest,
+  IMCPTool,
   MCPResponse,
 } from '../mcp-models';
 
@@ -9,22 +9,27 @@ import { logger } from '../../../common/logger';
 
 // LocalMCPServerInterface
 // In MCP - it should be done over stdio or SSE but as we're running in the same environment, we keep the JSON like responses but get rid of protocols
-export interface LocalMCPServerInterface {
+export interface ILocalMCPServerInterface {
   discoverTools: () => IMCPDiscoveryResponse;
   executeFunctionCall: (
     request: IMCPFunctionCallRequest,
   ) => Promise<MCPResponse>;
 }
 
-export class MCPServer implements LocalMCPServerInterface {
-  private tools: Record<string, MCPTool> = {};
+export class MCPServer implements ILocalMCPServerInterface {
+  private tools: Record<string, IMCPTool> = {};
   private handlers: Record<
     string,
     (parameters: Record<string, any>) => Promise<any>
   > = {};
 
+  /**
+   * registerTool
+   * @param tool
+   * @param handler
+   */
   public registerTool(
-    tool: MCPTool,
+    tool: IMCPTool,
     handler: (parameters: Record<string, any>) => Promise<any>,
   ) {
     const toolName = tool.name;
@@ -37,6 +42,29 @@ export class MCPServer implements LocalMCPServerInterface {
     this.handlers[tool.name] = handler;
   }
 
+  /**
+   * Discover the tools
+   * @returns
+   */
+  public discoverTools() {
+    return this.handleDiscoveryRequest();
+  }
+
+  /**
+   * Execute function call
+   * @param request
+   * @returns
+   */
+  public executeFunctionCall(
+    request: IMCPFunctionCallRequest,
+  ): Promise<MCPResponse> {
+    return this.handleFunctionCallRequest(request);
+  }
+
+  /**
+   * handleDiscoveryRequest
+   * @returns
+   */
   private handleDiscoveryRequest(): IMCPDiscoveryResponse {
     logger.info('Handling discovery request');
     return {
@@ -46,6 +74,11 @@ export class MCPServer implements LocalMCPServerInterface {
     };
   }
 
+  /**
+   * handleFunctionCallRequest
+   * @param request
+   * @returns
+   */
   private async handleFunctionCallRequest(
     request: IMCPFunctionCallRequest,
   ): Promise<MCPResponse> {
@@ -75,16 +108,6 @@ export class MCPServer implements LocalMCPServerInterface {
         details: error instanceof Error ? error.message : 'Unknown error',
       };
     }
-  }
-
-  public discoverTools() {
-    return this.handleDiscoveryRequest();
-  }
-
-  public executeFunctionCall(
-    request: IMCPFunctionCallRequest,
-  ): Promise<MCPResponse> {
-    return this.handleFunctionCallRequest(request);
   }
 }
 

@@ -1,4 +1,5 @@
 import { config } from '../app/config-handler';
+import { logger } from './logger';
 
 const urlParts = /^(https?:\/\/)?([^/]*@)?(.+?)(:\d{2,5})?([/?].*)?$/;
 const dot = /\./g;
@@ -18,7 +19,7 @@ export class WhitelistHandler {
    */
   public isWhitelisted(url: string): boolean {
     const { whitelistUrl } = config.getConfigFields(['whitelistUrl']);
-    console.log(whitelistUrl);
+    logger.info(whitelistUrl);
     return this.checkWhitelist(url, '*');
   }
 

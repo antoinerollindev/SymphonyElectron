@@ -4,7 +4,7 @@ export interface IMCPToolParameters {
   required: string[];
 }
 
-export interface MCPTool {
+export interface IMCPTool {
   name: string;
   description: string;
   parameters: IMCPToolParameters;
@@ -25,7 +25,7 @@ export type MCPRequest = IMCPDiscoveryRequest | IMCPFunctionCallRequest;
 export interface IMCPDiscoveryResponse {
   type: 'discovery_response';
   version: string;
-  tools: MCPTool[];
+  tools: IMCPTool[];
 }
 
 export interface IMCPFunctionCallResponse {
@@ -54,17 +54,17 @@ export const isFunctionCallResponse = (
 export const isErrorResponse = (r: MCPResponse): r is IMCPErrorResponse =>
   r.type === 'error';
 
-export interface RegistryServiceTool extends MCPTool {
+export interface IRegistryServiceTool extends IMCPTool {
   // method name in the registry's service. Defaults to tool name if it's not provided
   methodName?: string;
 }
 
-export interface RegistryServiceTools {
+export interface IRegistryServiceTools {
   symbol: string;
-  tools: RegistryServiceTool[];
+  tools: IRegistryServiceTool[];
 }
 
-export interface ToolAndHandler {
-  tool: MCPTool;
+export interface IToolAndHandler {
+  tool: IMCPTool;
   handler: (parameters: Record<string, any>) => any;
 }

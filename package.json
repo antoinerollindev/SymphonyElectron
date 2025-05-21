@@ -16,7 +16,7 @@
     "browserify": "run-s browserify-*",
     "browserify-preload": "browserify -o lib/src/renderer/_preload-main.js -x electron --insert-global-vars=__filename,__dirname lib/src/renderer/preload-main.js",
     "browserify-preload-component": "browserify -o lib/src/renderer/_preload-component.js -x electron --insert-global-vars=__filename,__dirname -t imgurify lib/src/renderer/preload-component.js",
-    "compile": "run-s compile:*",
+    "compile": "run-s lint compile:*",
     "compile:project": "gulp build",
     "dev": "gulp build && npm run browserify && cross-env ELECTRON_DEV=true electron .",
     "demo": "run-os",

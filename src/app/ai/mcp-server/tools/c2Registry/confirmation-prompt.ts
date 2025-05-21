@@ -1,11 +1,14 @@
-import { RegistryServiceTool, RegistryServiceTools } from '../../../mcp-models';
+import {
+  IRegistryServiceTool,
+  IRegistryServiceTools,
+} from '../../../mcp-models';
 
 const symbol = 'IConfirmationPromptService';
 
-const tools: RegistryServiceTool[] = [
+const tools: IRegistryServiceTool[] = [
   {
     name: 'promptConfirmation',
-    description: `Prompts user for confirmation. The user will respond with a boolean (true if user confirms, false otherwise). 
+    description: `Prompts user for confirmation. The user will respond with a boolean (true if user confirms, false otherwise).
     For any tool that requires confirmation (by default, it's not required), promptConfirmation should be called first to ask the user whether he is ok
     for the model to perform an action with the human readable parameters he expects to use to call the tool.
     If the user confirms (result of the prompt is true). The tool can be called without further confirmation prompts for a given initial request.
@@ -23,7 +26,7 @@ const tools: RegistryServiceTool[] = [
   },
 ];
 
-export const registryTools: RegistryServiceTools = {
+export const registryTools: IRegistryServiceTools = {
   symbol,
   tools,
 };

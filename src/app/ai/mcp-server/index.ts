@@ -1,9 +1,9 @@
-import { McpServer } from './mcp-server';
-import * as commonTools from './tools/common';
-import * as c2RegistryTools from './tools/c2Registry';
 import { c2RegistryHandler } from '../../c2-registry.handler';
+import { McpServer } from './mcp-server';
+import * as c2RegistryTools from './tools/c2Registry';
+import * as commonTools from './tools/common';
 
-export function initMcpServer() {
+export const initMcpServer = () => {
   Object.values(commonTools).forEach((toolAndHandler) => {
     McpServer.registerTool(toolAndHandler.tool, toolAndHandler.handler);
   });
@@ -11,8 +11,8 @@ export function initMcpServer() {
   Object.values(c2RegistryTools).forEach((registryTools) => {
     const symbol = registryTools.symbol;
     registryTools.tools.forEach((tool) => {
-      let { methodName, ...mcpTool } = tool;
-      methodName = methodName || tool.name;
+      const { methodName: toolMethodName, ...mcpTool } = tool;
+      const methodName = toolMethodName || tool.name;
       const orderedParameterNames = Array.from(
         Object.keys(mcpTool.parameters.properties),
       );
@@ -28,4 +28,4 @@ export function initMcpServer() {
       McpServer.registerTool(mcpTool, handler);
     });
   });
-}
+};
