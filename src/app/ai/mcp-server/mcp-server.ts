@@ -94,7 +94,8 @@ export class MCPServer implements ILocalMCPServerInterface {
     }
 
     try {
-      const result = await handler(parameters);
+      // result must be a string (because when chaining tool calls, tool result is injected in the message list and all messages are strings)
+      const result = await handler(parameters).then(JSON.stringify);
 
       return {
         type: 'function_call_response',
