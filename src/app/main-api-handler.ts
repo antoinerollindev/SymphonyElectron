@@ -605,8 +605,6 @@ ipcMain.handle(
       case apiCmds.getCurrentOriginUrl:
         return windowHandler.getMainWindow()?.origin;
       case apiCmds.askSymAi:
-        // TODO call MCP client
-        logger.info('Yup got here');
         return mcpClient.generateResponse(arg.symAiQuestion);
       case apiCmds.showScreenSharePermissionDialog: {
         const focusedWindow = BrowserWindow.getFocusedWindow();
