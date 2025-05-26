@@ -1,11 +1,4 @@
-import {
-  DynamicStructuredTool,
-  StructuredToolInterface,
-  tool,
-} from '@langchain/core/tools';
-import { MemorySaver } from '@langchain/langgraph';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { ChatOllama } from '@langchain/ollama';
+import { Ollama } from 'ollama';
 
 import {
   IMCPTool,
@@ -18,6 +11,33 @@ import { McpServer } from './mcp-server/mcp-server';
 import { logger } from '../../common/logger';
 import { initMcpServer } from './mcp-server';
 
+const systemInstructions = `You are Michel, a friendly AI assistant embedded inside a messaging application.
+Your role is to help users by automating tasks they could normally do manually.
+You are helpful, efficient, and respond clearly. You have access to tools to perform actions like:
+- Creating a new chat
+- Sending a message
+- Opening a custom workspace
+- Searching for users
+
+Always clarify if you're unsure about the user’s intent.
+Always reply as Michel would: warm, competent, and concise.
+`;
+
+enum Role {
+  USER = 'user', // Us
+  ASSISTANT = 'assistant', // The model
+  SYSTEM = 'system', // System instructions (from us)
+  TOOL = 'tool', // Tools calls results
+}
+
+interface IMessage {
+  role: Role;
+  content?: string; // Optional for ASSISTANT tools calls
+  // TODO - Separate the below properties in a separate interface
+  tool_name?: string; // Optional, if Role is TOOL or ASSISTANT
+  tool_arguments?: string; // Optional, If Role is TOOL or ASSISTANT
+}
+
 /**
  * This is the MCP client, it will be responsible for
  * - create the Ollama chat agent
@@ -26,22 +46,19 @@ import { initMcpServer } from './mcp-server';
  * - orchestrate all the queries to and responses from the ollama agent (where the model runs)
  */
 export class MCPClient {
-  private model: ChatOllama;
-  private tools: DynamicStructuredTool[] = [];
+  private modelName;
+  private tools: any[] = [];
   private agent: any = null;
-  private threadId: string;
+
+  // TODO - Add a maximum size
+  private history: IMessage[] = [];
 
   // TODO - This could come from a config somewhere? SDA Settings?
   constructor(modelName: string = 'qwen3:8b') {
-    this.model = new ChatOllama({
-      // Local ollama url
-      baseUrl: 'http://localhost:11434',
-      model: modelName,
-      verbose: true,
+    this.modelName = modelName;
+    this.agent = new Ollama({
+      host: 'http://localhost:11434',
     });
-    // One thread per session - in memory
-    // Check if we can link that the the user id?
-    this.threadId = `thread-${Date.now()}`;
   }
 
   /**
@@ -55,13 +72,10 @@ export class MCPClient {
       // Perform local discovery to get available tools
       const localToolsResponse = McpServer.discoverTools();
 
-      // Convert MCP tools to LangChain tools
-      this.tools = (await this.createLangChainTools(
-        localToolsResponse.tools,
-      )) as DynamicStructuredTool[];
-
-      // Create the LangGraph with discovered tools
-      await this.setupAgent();
+      this.tools = localToolsResponse.tools.map((tool: IMCPTool) => ({
+        type: 'function',
+        function: tool,
+      }));
 
       logger.info('MCP Client initialized successfully with LangGraph');
     } catch (error) {
@@ -75,23 +89,27 @@ export class MCPClient {
    * This is the function we need to call whenever the user says "Hey Symphony" - or triggers the assistant, no matter how
    */
   public async generateResponse(userInput: string): Promise<string> {
-    if (!this.agent) {
-      throw new Error('MCP Client not initialized. Call initialize() first.');
-    }
-
     try {
       // Add the new user message
-      const messages = [{ role: 'user', content: userInput }];
-
-      // Invoke the graph
-      const result = await this.agent.invoke(
-        {
-          messages,
+      if (!this.history.length) {
+        this.history.push({
+          role: Role.SYSTEM,
+          content: systemInstructions,
+        });
+      }
+      this.history.push({
+        role: Role.USER,
+        content: userInput,
+      });
+      const response = await this.agent.chat({
+        model: this.modelName,
+        messages: this.history,
+        tools: this.tools,
+        options: {
+          temperature: 0, // Make responses more deterministic
         },
-        { configurable: { thread_id: this.threadId } },
-      );
-      const responseMessage = result.messages[result.messages.length - 1];
-      return responseMessage.content;
+      });
+      return this.handleInnerToolCalling(response);
     } catch (error) {
       logger.error('Error generating response:', error);
       throw error;
@@ -99,35 +117,45 @@ export class MCPClient {
   }
 
   /**
-   * Convert MCP tools to LangChain StructuredTools
+   * Handles inner function calls
+   * @param response The initial response from the model
+   * @returns The final response, after all tool calls, as string
    */
-  private async createLangChainTools(
-    mcpTools: IMCPTool[],
-  ): Promise<StructuredToolInterface[]> {
-    return mcpTools.map((_tool) => {
-      return tool(
-        async (args: Record<string, any>) => {
-          return this.callMCPFunction(_tool.name, args);
+  private async handleInnerToolCalling(response: any): Promise<string> {
+    if (response.message.tool_calls) {
+      for (const toolCall of response.message.tool_calls) {
+        this.history.push({
+          role: Role.ASSISTANT,
+          tool_name: toolCall.function.name,
+          tool_arguments: toolCall.function.arguments,
+        });
+        const output = await this.callMCPFunction(
+          toolCall.function.name,
+          toolCall.function.arguments,
+        );
+        const toolResponseContent = JSON.stringify(output);
+        this.history.push({
+          role: Role.TOOL,
+          content: toolResponseContent,
+          tool_name: toolCall.function.name,
+          tool_arguments: toolCall.function.arguments,
+        });
+      }
+      const innerResponse = await this.agent.chat({
+        model: this.modelName,
+        messages: this.history,
+        options: {
+          temperature: 0,
         },
-        {
-          name: _tool.name,
-          description: _tool.description,
-          schema: _tool.parameters,
-        } as any,
-      ); // If we want to get rid of this one, we need zod
+      });
+      return this.handleInnerToolCalling(innerResponse);
+    }
+    const finalResponse = response.message.content;
+    this.history.push({
+      role: Role.ASSISTANT,
+      content: finalResponse,
     });
-  }
-
-  /**
-   * Setup the LangGraph workflow with discovered tools
-   */
-  private async setupAgent(): Promise<void> {
-    const agentCheckpointer = new MemorySaver();
-    this.agent = createReactAgent({
-      llm: this.model,
-      tools: this.tools,
-      checkpointSaver: agentCheckpointer,
-    });
+    return finalResponse;
   }
 
   /**
