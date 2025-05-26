@@ -67,6 +67,7 @@ import { displayMediaRequestHandler } from './display-media-request-handler';
 import { miniViewHandler } from './mini-view-handler';
 import { openfinHandler } from './openfin-handler';
 import { presenceStatus } from './presence-status-handler';
+import { saveSessionCookie } from './session-handler';
 import { appStats } from './stats';
 import { presenceStatusStore, sdaMenuStore } from './stores/index';
 import { voiceHandler } from './voice-handler';
@@ -347,6 +348,9 @@ ipcMain.on(
 
           if (appMenu && windowHandler.isMana) {
             appMenu.buildMenu();
+          }
+          if (windowHandler.isMana) {
+            saveSessionCookie();
           }
           logger.info('main-api-handler: isMana: ' + windowHandler.isMana);
           await appStats.sendAnalytics(SDAUserSessionActionTypes.Login);

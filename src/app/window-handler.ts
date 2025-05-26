@@ -57,6 +57,7 @@ import { mainEvents } from './main-event-handler';
 import { miniViewHandler } from './mini-view-handler';
 import { presenceStatus } from './presence-status-handler';
 import { exportLogs } from './reports-handler';
+import { reviveSessionCookie } from './session-handler';
 import { SpellChecker } from './spell-check-handler';
 import { appStats } from './stats';
 import { winStore } from './stores';
@@ -301,6 +302,8 @@ export class WindowHandler {
     ) {
       this.shouldShowWelcomeScreen = true;
     }
+
+    reviveSessionCookie();
 
     this.windowOpts = {
       ...this.getWindowOpts(
