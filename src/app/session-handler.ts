@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { isDevEnv } from '../common/env';
 import { logger } from '../common/logger';
+import { getCommandLineArgs } from '../common/utils';
 import { whitelistHandler } from '../common/whitelist-handler';
 import { config, IConfig } from './config-handler';
 
@@ -76,7 +77,11 @@ export const reviveSessionCookie = () => {
       try {
         const { skey, antiCsrfToken } = JSON.parse(val);
         if (skey && antiCsrfToken) {
-          const url = (config.userConfig as IConfig).url;
+          const urlArg = getCommandLineArgs(process.argv, '--url', false);
+          const url = urlArg
+            ? urlArg.split('=')[1]
+            : (config.userConfig as IConfig).url;
+
           setSessionCookie(url, skey, antiCsrfToken);
         }
       } catch (error) {
