@@ -129,6 +129,11 @@ if (ssfWindow.ssf) {
   contextBridge.exposeInMainWorld('symAi', {
     ask: ssfWindow.ssf.askSymAi,
   });
+
+  contextBridge.exposeInMainWorld('speechRecognition', {
+    start: ssfWindow.ssf.startSpeechRecognition,
+    stop: ssfWindow.ssf.stopSpeechRecognition,
+  });
 }
 
 /**

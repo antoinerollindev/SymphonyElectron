@@ -39,6 +39,8 @@ import { DelayedFunctionQueue, throttle } from '../common/utils';
 import SSFNotificationHandler from './notification-ssf-handler';
 import { ScreenSnippetBcHandler } from './screen-snippet-bc-handler';
 
+import { speechRecognition } from './ai/speech-recognition';
+
 const SUPPORTED_SETTINGS = ['flashing-notifications'];
 const MAIN_WINDOW_NAME = 'main';
 
@@ -75,7 +77,7 @@ export interface ILocalObject {
 
 const local: ILocalObject = {
   ipcRenderer,
-  openfinIntentCallbacks: new Map(),
+  openfinIntentCallbacks: new Map()
 };
 
 const notificationActionCallbacks = new Map<
@@ -1191,6 +1193,14 @@ export class SSFApi {
       cmd: apiCmds.askSymAi,
       symAiQuestion,
     });
+  }
+
+  public async startSpeechRecognition(cb) {
+    speechRecognition.start(cb);
+  }
+
+  public async stopSpeechRecognition() {
+    speechRecognition.stop();
   }
 
   /**
