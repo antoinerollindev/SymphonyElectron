@@ -68,3 +68,8 @@ export interface IToolAndHandler {
   tool: IMCPTool;
   handler: (parameters: Record<string, any>) => any;
 }
+
+export interface IMCPClient {
+  initialize(): Promise<void>;
+  generateResponse(userInput: string): Promise<string>;
+}
