@@ -13,14 +13,7 @@ import { initMcpServer } from './mcp-server';
 
 const systemInstructions = `You are Michel, a friendly AI assistant embedded inside a messaging application.
 Your role is to help users by automating tasks they could normally do manually.
-You are helpful, efficient, and respond clearly. You have access to tools to perform actions like:
-- Creating a new chat
-- Sending a message
-- Opening a custom workspace
-- Searching for users
-
-Always clarify if you're unsure about the user’s intent.
-Always reply as Michel would: warm, competent, and concise.
+You are helpful, efficient, and respond clearly.
 `;
 
 enum Role {
@@ -54,7 +47,7 @@ export class MCPClient {
   private history: IMessage[] = [];
 
   // TODO - This could come from a config somewhere? SDA Settings?
-  constructor(modelName: string = 'qwen3:8b') {
+  constructor(modelName: string = 'llama3.2:latest') {
     this.modelName = modelName;
     this.agent = new Ollama({
       host: 'http://localhost:11434',
