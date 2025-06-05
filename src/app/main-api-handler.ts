@@ -60,7 +60,6 @@ import {
 
 import { getCommandLineArgs } from '../common/utils';
 import callNotificationHelper from '../renderer/call-notification-helper';
-import { mcpLangchainClient } from './ai/mcp-client/langchainjs/mcp-langchainjs-handler';
 import { autoUpdate, AutoUpdateTrigger } from './auto-update-handler';
 import { SDAUserSessionActionTypes } from './bi/interface';
 import { displayMediaRequestHandler } from './display-media-request-handler';
@@ -71,6 +70,8 @@ import { saveSessionCookie } from './session-handler';
 import { appStats } from './stats';
 import { presenceStatusStore, sdaMenuStore } from './stores/index';
 import { voiceHandler } from './voice-handler';
+
+import { mcpClient } from './ai/mcp-client-handler';
 
 // Swift search API
 let swiftSearchInstance;
@@ -609,8 +610,7 @@ ipcMain.handle(
       case apiCmds.getCurrentOriginUrl:
         return windowHandler.getMainWindow()?.origin;
       case apiCmds.askSymAi:
-        return mcpLangchainClient.generateResponse(arg.symAiQuestion);
-      // return mcpClient.generateResponse(arg.symAiQuestion);
+        return mcpClient.generateResponse(arg.symAiQuestion);
       case apiCmds.showScreenSharePermissionDialog: {
         const focusedWindow = BrowserWindow.getFocusedWindow();
         if (focusedWindow && !focusedWindow.isDestroyed()) {
