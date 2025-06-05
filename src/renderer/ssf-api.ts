@@ -77,7 +77,7 @@ export interface ILocalObject {
 
 const local: ILocalObject = {
   ipcRenderer,
-  openfinIntentCallbacks: new Map()
+  openfinIntentCallbacks: new Map(),
 };
 
 const notificationActionCallbacks = new Map<
@@ -1195,10 +1195,17 @@ export class SSFApi {
     });
   }
 
+  /**
+   * start speech recognition
+   * @param cb
+   */
   public async startSpeechRecognition(cb) {
     speechRecognition.start(cb);
   }
 
+  /**
+   * stops speech recognition
+   */
   public async stopSpeechRecognition() {
     speechRecognition.stop();
   }

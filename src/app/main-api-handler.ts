@@ -60,7 +60,7 @@ import {
 
 import { getCommandLineArgs } from '../common/utils';
 import callNotificationHelper from '../renderer/call-notification-helper';
-import { mcpClient } from './ai/mcp-client-handler';
+import { mcpLangchainClient } from './ai/mcp-client/langchainjs/mcp-langchainjs-handler';
 import { autoUpdate, AutoUpdateTrigger } from './auto-update-handler';
 import { SDAUserSessionActionTypes } from './bi/interface';
 import { displayMediaRequestHandler } from './display-media-request-handler';
@@ -609,7 +609,8 @@ ipcMain.handle(
       case apiCmds.getCurrentOriginUrl:
         return windowHandler.getMainWindow()?.origin;
       case apiCmds.askSymAi:
-        return mcpClient.generateResponse(arg.symAiQuestion);
+        return mcpLangchainClient.generateResponse(arg.symAiQuestion);
+      // return mcpClient.generateResponse(arg.symAiQuestion);
       case apiCmds.showScreenSharePermissionDialog: {
         const focusedWindow = BrowserWindow.getFocusedWindow();
         if (focusedWindow && !focusedWindow.isDestroyed()) {

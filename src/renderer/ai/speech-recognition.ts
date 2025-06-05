@@ -1,3 +1,5 @@
+import { logger } from '../../common/logger';
+
 /**
  * Record the audio using the native navigator's MediaDevices
  * Sends the audio to a local python server through Websocket (using native WebSocket)
@@ -19,43 +21,47 @@ class SpeechRecognition {
     this.ws = null;
   }
 
+  /**
+   * start the feed
+   * @param cb
+   */
   public async start(cb: any) {
-    console.log('Speech recognition - start recording');
+    logger.info('Speech recognition - start recording');
     this.cb = cb;
     // Create the websocket for this recognition session
     this.ws = new WebSocket(this.VOSK_BRIDGE_URL);
     this.ws.onopen = () => {
-      console.log('Connected to the local Vosk bridge');
+      logger.info('Connected to the local Vosk bridge');
     };
     this.ws.onclose = () => {
-      console.warn('Vosk WebSocket closed');
+      logger.warn('Vosk WebSocket closed');
     };
     this.ws.onerror = (err) => {
-      console.error('Vosk WebSocket error:', err);
+      logger.error('Vosk WebSocket error:', err);
     };
     this.ws.onmessage = (event) => {
       if (!this.cb) {
-        console.error(
+        logger.error(
           'Speech recognition - cb should be defined at this point.',
         );
         return;
       }
       const data = event.data;
-      console.log('Speech recognition result from Vosk:');
-      console.log(data.toString());
+      logger.info('Speech recognition result from Vosk:');
+      logger.info(data.toString());
       try {
         const result = JSON.parse(data.toString());
         if (result.partial) {
           // Send live partial to renderer
-          console.log('transcript-partial: ', result.partial);
+          logger.info('transcript-partial: ', result.partial);
           this.cb('transcription-interim-result', result.partial);
         } else if (result.text) {
           // Final transcript
-          console.log('transcript-final: ', result.text);
+          logger.info('transcript-final: ', result.text);
           this.cb('transcription-result', result.text);
         }
       } catch (err) {
-        console.error('Error parsing message from Vosk:', err);
+        logger.error('Error parsing message from Vosk:', err);
       }
     };
     try {
@@ -89,12 +95,12 @@ class SpeechRecognition {
 
         const hasAudio = inputData.some((sample) => Math.abs(sample) > 0.01);
         if (hasAudio) {
-          console.log(
+          logger.info(
             'Audio detected, max amplitude:',
             Math.max(...inputData.map(Math.abs)),
           );
         } else {
-          console.warn('No audio detected');
+          logger.warn('No audio detected');
         }
 
         // Convert Float32Array to Int16Array (PCM 16-bit)
@@ -109,12 +115,15 @@ class SpeechRecognition {
       source.connect(this.processor);
       this.processor.connect(this.audioContext.destination);
     } catch (error) {
-      console.error('Error starting recording:', error);
+      logger.error('Error starting recording:', error);
     }
   }
 
+  /**
+   * stops recording
+   */
   public stop() {
-    console.log('Speech recognition - stop recording');
+    logger.info('Speech recognition - stop recording');
     if (this.processor) {
       this.processor.disconnect();
       this.processor = null;
@@ -136,7 +145,12 @@ class SpeechRecognition {
     }
   }
 
-  floatTo16BitPCM(input) {
+  /**
+   * utils to convert float to 16bit array
+   * @param input
+   * @returns
+   */
+  private floatTo16BitPCM(input) {
     const buffer = new ArrayBuffer(input.length * 2);
     const view = new DataView(buffer);
     let offset = 0;
@@ -150,6 +164,6 @@ class SpeechRecognition {
   }
 }
 
-console.log('Instantiating SpeechRecognition class');
+logger.info('Instantiating SpeechRecognition class');
 
 export const speechRecognition = new SpeechRecognition();
