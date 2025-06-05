@@ -55,6 +55,8 @@ export class LangchainMCPClient implements IMCPClient {
       baseUrl: 'http://localhost:11434',
       model: modelName,
       verbose: true,
+      temperature: 0,
+      repeatPenalty: 1.2,
     });
     // One thread per session - in memory
     // Check if we can link that the the user id?
