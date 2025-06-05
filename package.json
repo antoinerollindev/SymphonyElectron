@@ -231,6 +231,9 @@
   },
   "dependencies": {
     "@fluentui/react-icons": "^2.0.279",
+    "@langchain/core": "^0.3.57",
+    "@langchain/langgraph": "^0.3.0",
+    "@langchain/ollama": "^0.2.1",
     "@openfin/node-adapter": "^40.102.1",
     "@types/lazy-brush": "^1.0.0",
     "adm-zip": "^0.5.10",
@@ -242,6 +245,7 @@
     "electron-log": "4.4.8",
     "electron-updater": "6.6.2",
     "filesize": "^10.0.6",
+    "langchain": "^0.1.7",
     "lazy-brush": "^1.0.1",
     "lodash.debounce": "^4.0.8",
     "ollama": "^0.5.15",
