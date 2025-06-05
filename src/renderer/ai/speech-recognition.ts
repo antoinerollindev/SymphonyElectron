@@ -1,5 +1,3 @@
-import { logger } from '../../common/logger';
-
 /**
  * Record the audio using the native navigator's MediaDevices
  * Sends the audio to a local python server through Websocket (using native WebSocket)
@@ -26,42 +24,42 @@ class SpeechRecognition {
    * @param cb
    */
   public async start(cb: any) {
-    logger.info('Speech recognition - start recording');
+    console.info('Speech recognition - start recording');
     this.cb = cb;
     // Create the websocket for this recognition session
     this.ws = new WebSocket(this.VOSK_BRIDGE_URL);
     this.ws.onopen = () => {
-      logger.info('Connected to the local Vosk bridge');
+      console.info('Connected to the local Vosk bridge');
     };
     this.ws.onclose = () => {
-      logger.warn('Vosk WebSocket closed');
+      console.warn('Vosk WebSocket closed');
     };
     this.ws.onerror = (err) => {
-      logger.error('Vosk WebSocket error:', err);
+      console.error('Vosk WebSocket error:', err);
     };
     this.ws.onmessage = (event) => {
       if (!this.cb) {
-        logger.error(
+        console.error(
           'Speech recognition - cb should be defined at this point.',
         );
         return;
       }
       const data = event.data;
-      logger.info('Speech recognition result from Vosk:');
-      logger.info(data.toString());
+      console.info('Speech recognition result from Vosk:');
+      console.info(data.toString());
       try {
         const result = JSON.parse(data.toString());
         if (result.partial) {
           // Send live partial to renderer
-          logger.info('transcript-partial: ', result.partial);
+          console.info('transcript-partial: ', result.partial);
           this.cb('transcription-interim-result', result.partial);
         } else if (result.text) {
           // Final transcript
-          logger.info('transcript-final: ', result.text);
+          console.info('transcript-final: ', result.text);
           this.cb('transcription-result', result.text);
         }
       } catch (err) {
-        logger.error('Error parsing message from Vosk:', err);
+        console.error('Error parsing message from Vosk:', err);
       }
     };
     try {
@@ -95,12 +93,12 @@ class SpeechRecognition {
 
         const hasAudio = inputData.some((sample) => Math.abs(sample) > 0.01);
         if (hasAudio) {
-          logger.info(
+          console.info(
             'Audio detected, max amplitude:',
             Math.max(...inputData.map(Math.abs)),
           );
         } else {
-          logger.warn('No audio detected');
+          console.warn('No audio detected');
         }
 
         // Convert Float32Array to Int16Array (PCM 16-bit)
@@ -115,7 +113,7 @@ class SpeechRecognition {
       source.connect(this.processor);
       this.processor.connect(this.audioContext.destination);
     } catch (error) {
-      logger.error('Error starting recording:', error);
+      console.error('Error starting recording:', error);
     }
   }
 
@@ -123,7 +121,7 @@ class SpeechRecognition {
    * stops recording
    */
   public stop() {
-    logger.info('Speech recognition - stop recording');
+    console.info('Speech recognition - stop recording');
     if (this.processor) {
       this.processor.disconnect();
       this.processor = null;
@@ -164,6 +162,6 @@ class SpeechRecognition {
   }
 }
 
-logger.info('Instantiating SpeechRecognition class');
+console.info('Instantiating SpeechRecognition class');
 
 export const speechRecognition = new SpeechRecognition();

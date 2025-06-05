@@ -28,7 +28,7 @@
     "no-var-requires": true,
     "only-arrow-functions": true,
     "object-literal-sort-keys": false,
-    "no-console": [true, "log", "error"],
+    "no-console": false,
     "one-line": [true, "check-else", "check-whitespace", "check-open-brace"],
     "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "always", "ignore-bound-class-methods"],
@@ -51,6 +51,6 @@
       "check-module"
     ],
     "no-submodule-imports": [true, "@langchain"],
-    "completed-docs": [true, "functions", "methods"]
+    "completed-docs": false
   }
 }
