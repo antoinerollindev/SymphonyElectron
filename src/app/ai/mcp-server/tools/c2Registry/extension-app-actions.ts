@@ -5,7 +5,8 @@ const symbol = 'IExtensionAppService';
 const tools: IMCPTool[] = [
   {
     name: 'openTradingViewChart',
-    description: 'Opens TradingView chart view about the ticker',
+    description:
+      'Opens a Symphony module in the current workspace with a chart about the ticker on TradingView.',
     parameters: {
       type: 'object',
       properties: {
@@ -19,7 +20,8 @@ const tools: IMCPTool[] = [
   },
   {
     name: 'openTradingViewFundamentalData',
-    description: 'Opens TradingView fundamental data view about the ticker',
+    description:
+      'Opens a Symphony module in the current workspace with a fundamental data view about the ticker on TradingView.',
     parameters: {
       type: 'object',
       properties: {
@@ -34,7 +36,7 @@ const tools: IMCPTool[] = [
   {
     name: 'openDirectoryFromTicker',
     description:
-      'Opens a directory with a filter on people interested in the ticker. Requires confirmation prompt',
+      'Opens a Symphony module in the current workspace displaying a directory with a filter on people interested in the ticker.',
     parameters: {
       type: 'object',
       properties: {

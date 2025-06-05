@@ -70,6 +70,13 @@ export interface IToolAndHandler {
 }
 
 export interface IMCPClient {
+  /**
+   * initialize
+   */
   initialize(): Promise<void>;
+  /**
+   * generate response
+   * @param userInput
+   */
   generateResponse(userInput: string): Promise<string>;
 }

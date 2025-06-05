@@ -8,20 +8,26 @@ const symbol = 'IConfirmationPromptService';
 const tools: IRegistryServiceTool[] = [
   {
     name: 'promptConfirmation',
-    description: `Prompts user for confirmation. The user will respond with a boolean (true if user confirms, false otherwise).
-    For any tool that requires confirmation (by default, it's not required), promptConfirmation should be called first to ask the user whether he is ok
-    for the model to perform an action with the human readable parameters he expects to use to call the tool.
-    If the user confirms (result of the prompt is true). The tool can be called without further confirmation prompts for a given initial request.
-    If the user doesn't confirm (result of the prompt is false). The tool is not called and the promptConfirmation can be called again with another suggestion (at most twice for the same initial request)`,
+    description: `For any tool that requires confirmation (by default, it's not required), promptConfirmation should be called first to determine whether the model should call the tool.
+    If the user specifically says the no confirmation is required, then there is no need to call promptConfirmation`,
     parameters: {
       type: 'object',
       properties: {
         text: {
           type: 'string',
-          description: 'The text to prompt the user with',
+          description:
+            'The text to prompt the user with. This needs to be formatted with human language that the user should be able to understand.',
+        },
+        tool: {
+          type: 'string',
+          description: 'The name of the tool to call',
+        },
+        arguments: {
+          type: 'object',
+          description: 'The parameters to pass to the tool',
         },
       },
-      required: ['text'],
+      required: ['text', 'tool', 'arguments'],
     },
   },
 ];

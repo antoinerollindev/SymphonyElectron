@@ -10,12 +10,17 @@ class C2RegistryHandler {
    * @returns
    */
   public async callRegistry(symbol: string, method: string, args: any[] = []) {
-    windowHandler.getMainWebContents()?.openDevTools();
     const command = `window.registry.get('${symbol}')?.['${method}']?.(${args
       ?.map((a) => JSON.stringify(a))
       .join(',')})`;
     logger.info(command);
-    return windowHandler.getMainWebContents()?.executeJavaScript(command);
+    const result = await windowHandler
+      .getMainWebContents()
+      ?.executeJavaScript(command);
+    if (result === undefined) {
+      return 'tool call successful';
+    }
+    return result;
   }
 }
 

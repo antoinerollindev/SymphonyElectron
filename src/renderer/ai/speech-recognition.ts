@@ -19,13 +19,17 @@ class SpeechRecognition {
     this.ws = null;
   }
 
+  /**
+   * start the feed
+   * @param cb
+   */
   public async start(cb: any) {
-    console.log('Speech recognition - start recording');
+    console.info('Speech recognition - start recording');
     this.cb = cb;
     // Create the websocket for this recognition session
     this.ws = new WebSocket(this.VOSK_BRIDGE_URL);
     this.ws.onopen = () => {
-      console.log('Connected to the local Vosk bridge');
+      console.info('Connected to the local Vosk bridge');
     };
     this.ws.onclose = () => {
       console.warn('Vosk WebSocket closed');
@@ -41,17 +45,17 @@ class SpeechRecognition {
         return;
       }
       const data = event.data;
-      console.log('Speech recognition result from Vosk:');
-      console.log(data.toString());
+      console.info('Speech recognition result from Vosk:');
+      console.info(data.toString());
       try {
         const result = JSON.parse(data.toString());
         if (result.partial) {
           // Send live partial to renderer
-          console.log('transcript-partial: ', result.partial);
+          console.info('transcript-partial: ', result.partial);
           this.cb('transcription-interim-result', result.partial);
         } else if (result.text) {
           // Final transcript
-          console.log('transcript-final: ', result.text);
+          console.info('transcript-final: ', result.text);
           this.cb('transcription-result', result.text);
         }
       } catch (err) {
@@ -89,7 +93,7 @@ class SpeechRecognition {
 
         const hasAudio = inputData.some((sample) => Math.abs(sample) > 0.01);
         if (hasAudio) {
-          console.log(
+          console.info(
             'Audio detected, max amplitude:',
             Math.max(...inputData.map(Math.abs)),
           );
@@ -113,8 +117,11 @@ class SpeechRecognition {
     }
   }
 
+  /**
+   * stops recording
+   */
   public stop() {
-    console.log('Speech recognition - stop recording');
+    console.info('Speech recognition - stop recording');
     if (this.processor) {
       this.processor.disconnect();
       this.processor = null;
@@ -136,7 +143,12 @@ class SpeechRecognition {
     }
   }
 
-  floatTo16BitPCM(input) {
+  /**
+   * utils to convert float to 16bit array
+   * @param input
+   * @returns
+   */
+  private floatTo16BitPCM(input) {
     const buffer = new ArrayBuffer(input.length * 2);
     const view = new DataView(buffer);
     let offset = 0;
@@ -150,6 +162,6 @@ class SpeechRecognition {
   }
 }
 
-console.log('Instantiating SpeechRecognition class');
+console.info('Instantiating SpeechRecognition class');
 
 export const speechRecognition = new SpeechRecognition();

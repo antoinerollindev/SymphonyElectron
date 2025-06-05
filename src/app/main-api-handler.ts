@@ -60,7 +60,6 @@ import {
 
 import { getCommandLineArgs } from '../common/utils';
 import callNotificationHelper from '../renderer/call-notification-helper';
-import { mcpClient } from './ai/mcp-client-handler';
 import { autoUpdate, AutoUpdateTrigger } from './auto-update-handler';
 import { SDAUserSessionActionTypes } from './bi/interface';
 import { displayMediaRequestHandler } from './display-media-request-handler';
@@ -71,6 +70,8 @@ import { saveSessionCookie } from './session-handler';
 import { appStats } from './stats';
 import { presenceStatusStore, sdaMenuStore } from './stores/index';
 import { voiceHandler } from './voice-handler';
+
+import { mcpClient } from './ai/mcp-client-handler';
 
 // Swift search API
 let swiftSearchInstance;
