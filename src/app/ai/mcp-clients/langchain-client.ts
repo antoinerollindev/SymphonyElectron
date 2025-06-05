@@ -6,6 +6,7 @@ import {
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatOllama } from '@langchain/ollama';
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 
 import {
   IMCPClient,
@@ -20,6 +21,7 @@ import { logger } from '../../../common/logger';
 import { initMcpServer } from '../mcp-server';
 
 import { SystemMessage } from '@langchain/core/messages';
+import { BaseChatModel } from '@langchain/core/dist/language_models/chat_models';
 
 // import { RunnableSequence } from "langchain/schema/runnable";
 // import { RunnableWithMessageHistory } from "langchain/runnables";
@@ -29,6 +31,11 @@ Your role is to help users by automating tasks they could normally do manually.
 You are helpful, efficient, and respond clearly.
 `;
 
+export enum langchainModel {
+  OLLAMA = 'OLLAMA',
+  GEMINI = 'GEMINI',
+}
+
 /**
  * This is the MCP client, it will be responsible for
  * - create the Ollama chat agent
@@ -37,7 +44,7 @@ You are helpful, efficient, and respond clearly.
  * - orchestrate all the queries to and responses from the ollama agent (where the model runs)
  */
 export class LangchainMCPClient implements IMCPClient {
-  private model: ChatOllama;
+  private model: BaseChatModel;
   private tools: DynamicStructuredTool[] = [];
   private threadId: string;
 
@@ -49,8 +56,12 @@ export class LangchainMCPClient implements IMCPClient {
   // private history: IMessage[] = [];
 
   // TODO - This could come from a config somewhere? SDA Settings?
-  constructor(modelName: string = 'qwen3:8b') {
-    this.model = new ChatOllama({
+  constructor(
+    modelProvider: langchainModel = langchainModel.OLLAMA,
+    modelName: string = 'qwen3:8b',
+  ) {
+    if (modelProvider === langchainModel.OLLAMA) {
+          this.model = new ChatOllama({
       // Local ollama url
       baseUrl: 'http://localhost:11434',
       model: modelName,
@@ -58,6 +69,14 @@ export class LangchainMCPClient implements IMCPClient {
       temperature: 0,
       repeatPenalty: 1.2,
     });
+    } else {
+      // To use this, you need to set the GOOGLE_API_KEY env var
+      // export GOOGLE_API_KEY="..."
+      this.model = new ChatGoogleGenerativeAI({
+        model: 'gemini-2.0-flash-lite',
+        temperature: 0.2
+      });
+    }
     // One thread per session - in memory
     // Check if we can link that the the user id?
     this.threadId = `thread-${Date.now()}`;
