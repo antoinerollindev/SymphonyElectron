@@ -1,4 +1,5 @@
 import { logger } from '../common/logger';
+import { clean } from '../common/utils';
 import { windowHandler } from './window-handler';
 
 class C2RegistryHandler {
@@ -14,14 +15,18 @@ class C2RegistryHandler {
       ?.map((a) => JSON.stringify(a))
       .join(',')})`;
     logger.info(command);
-    const result = await windowHandler
-      .getMainWebContents()
-      ?.executeJavaScript(command);
-    if (result === undefined) {
-      return 'tool call successful';
-    }
-    return result;
+    return Promise.race([
+      windowHandler
+        .getMainWebContents()
+        ?.executeJavaScript(command)
+        .then(clean),
+      new Promise((resolve) =>
+        setTimeout(
+          () => resolve('Registry call timed out after 30 seconds'),
+          30000,
+        ),
+      ),
+    ]);
   }
 }
-
 export const c2RegistryHandler = new C2RegistryHandler();

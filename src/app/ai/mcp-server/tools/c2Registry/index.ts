@@ -5,3 +5,4 @@ export { registryTools as userStoreTools } from './user-store';
 export { registryTools as streamStoreTools } from './stream-store';
 export { registryTools as chatTools } from './chat';
 export { registryTools as canvasTools } from './canvas';
+export { registryTools as prepareMessageTools } from './prepare-message';
