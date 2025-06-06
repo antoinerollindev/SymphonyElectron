@@ -12,12 +12,13 @@ const createRoomParams = {
         properties: {
           id: {
             type: 'integer',
+            description: 'The user id',
           },
         },
         required: ['id'],
       },
       description:
-        'The users to create the chat room with (default value: empty array)',
+        'The user ids to create the chat room with (default value: empty array)',
     },
     roomName: {
       type: 'string',

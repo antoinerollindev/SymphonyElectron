@@ -3,10 +3,10 @@ import {
   StructuredToolInterface,
   tool,
 } from '@langchain/core/tools';
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { ChatOllama } from '@langchain/ollama';
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
 
 import {
   IMCPClient,
@@ -20,16 +20,18 @@ import { McpServer } from '../mcp-server/mcp-server';
 import { logger } from '../../../common/logger';
 import { initMcpServer } from '../mcp-server';
 
-import { SystemMessage } from '@langchain/core/messages';
 import { BaseChatModel } from '@langchain/core/dist/language_models/chat_models';
+import { SystemMessage } from '@langchain/core/messages';
 
 // import { RunnableSequence } from "langchain/schema/runnable";
 // import { RunnableWithMessageHistory } from "langchain/runnables";
 
-const systemInstructions = `You are Michel, a friendly AI assistant embedded inside a messaging application.
+const systemInstructions = `You are Michel, a friendly AI assistant embedded inside a messaging application called Symphony.
 Your role is to help users by automating tasks they could normally do manually.
 You are helpful, efficient, and respond clearly.
-`;
+The user you are talking to (current user) can ask you to perform actions that requires you to perform preliminary actions.
+Whenever you require some preliminary information (like a chat id, user ids, etc.) to perform a tool action, try to find it by yourself, using tools, before asking the current user.
+When possible, reuse the previous messages data.`;
 
 export enum langchainModel {
   OLLAMA = 'OLLAMA',
@@ -61,20 +63,20 @@ export class LangchainMCPClient implements IMCPClient {
     modelName: string = 'qwen3:8b',
   ) {
     if (modelProvider === langchainModel.OLLAMA) {
-          this.model = new ChatOllama({
-      // Local ollama url
-      baseUrl: 'http://localhost:11434',
-      model: modelName,
-      verbose: true,
-      temperature: 0,
-      repeatPenalty: 1.2,
-    });
+      this.model = new ChatOllama({
+        // Local ollama url
+        baseUrl: 'http://localhost:11434',
+        model: modelName,
+        verbose: true,
+        temperature: 0,
+        repeatPenalty: 1.2,
+      });
     } else {
       // To use this, you need to set the GOOGLE_API_KEY env var
       // export GOOGLE_API_KEY="..."
       this.model = new ChatGoogleGenerativeAI({
         model: 'gemini-2.0-flash-lite',
-        temperature: 0.2
+        temperature: 0.1,
       });
     }
     // One thread per session - in memory

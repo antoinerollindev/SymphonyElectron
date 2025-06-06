@@ -371,3 +371,67 @@ export class DelayedFunctionQueue {
     }
   }
 }
+
+/**
+ * Returns a cleaned version of the given element if it's an array or an object. Returns the given element otherwise.
+ * @param elem The element to clean (i.e. `{ a: 1, b: { b1: '', b2: [ { b21: [], b22: false }, null ] } }`)
+ * @returns The element cleaned up (i.e. `{ a: 1, b: { b2: [ { b22: false }, null ] } }`)
+ */
+export const clean = (elem: any) => {
+  if (elem === null || elem === undefined) {
+    return elem;
+  } else if (typeof elem === 'object') {
+    return Array.isArray(elem) ? cleanArray(elem) : cleanObject(elem);
+  }
+  return elem;
+};
+
+/**
+ * Cleans the given object.
+ * Removes properties with null, undefined, empty arrays or empty strings.
+ * Sub-objects and sub-arrays are cleaned recursively.
+ * @param obj The object to clean
+ * @returns The object cleaned up
+ */
+export const cleanObject = (obj: object) => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (value === null || value === undefined) {
+      return acc;
+    }
+
+    if (typeof value === 'string') {
+      if (value.length) {
+        acc[key] = value;
+      }
+    } else if (Array.isArray(value)) {
+      if (value.length) {
+        acc[key] = cleanArray(value);
+      }
+    } else if (typeof value === 'object') {
+      const cleanedValue = cleanObject(value);
+      if (Object.keys(cleanedValue).length > 0) {
+        acc[key] = cleanedValue;
+      }
+    } else {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
+};
+
+/**
+ * Recursively cleans nested objects and arrays within the array elements.
+ * Does not filter out array elements themselves. Object and array items are cleaned recursively.
+ * @param arr The array to clean
+ * @returns The cleaned up array
+ */
+export const cleanArray = (arr: any[]) =>
+  arr.map((item) => {
+    if (Array.isArray(item)) {
+      return cleanArray(item);
+    } else if (typeof item === 'object') {
+      return cleanObject(item);
+    }
+    return item;
+  });
