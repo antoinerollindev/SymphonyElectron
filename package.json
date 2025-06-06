@@ -232,6 +232,7 @@
   "dependencies": {
     "@fluentui/react-icons": "^2.0.279",
     "@langchain/core": "^0.3.57",
+    "@langchain/google-genai": "^0.2.10",
     "@langchain/langgraph": "^0.3.0",
     "@langchain/ollama": "^0.2.1",
     "@openfin/node-adapter": "^40.102.1",
