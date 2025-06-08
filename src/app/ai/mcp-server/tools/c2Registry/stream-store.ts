@@ -42,6 +42,20 @@ const tools: IMCPTool[] = [
       required: ['streamId', 'userId'],
     },
   },
+  {
+    name: 'getStreamMembers',
+    description: `Returns the list of users in the given chat (requires chat id).`,
+    parameters: {
+      type: 'object',
+      properties: {
+        streamId: {
+          type: 'string',
+          description: 'The id of chat to retrieve the members from.',
+        },
+      },
+      required: ['streamId'],
+    },
+  },
 ];
 
 export const registryTools: IRegistryServiceTools = {

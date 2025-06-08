@@ -93,36 +93,21 @@ export class MCPServer implements ILocalMCPServerInterface {
       };
     }
 
-    try {
-      // result must be a string (because when chaining tool calls, tool result is injected in the message list and all messages are strings)
-      const result = await handler(parameters)
-        .then(
-          (r) =>
-            `MCP tool '${functionName}' called with '${JSON.stringify(
-              parameters,
-            )}' responded with '${JSON.stringify(r)}'`,
-        )
-        .catch(
-          (e) =>
-            `MCP tool '${functionName}' called with '${JSON.stringify(
-              parameters,
-            )}' threw error '${JSON.stringify(e)}'`,
-        );
+    const prefix = `MCP tool '${functionName}' called with '${JSON.stringify(
+      parameters,
+    )}'`;
 
-      logger.info(`Result: ${result}`);
+    // result must be a string (because when chaining tool calls, tool result is injected in the message list and all messages are strings)
+    const result = await handler(parameters)
+      .then((r) => `${prefix} responded with '${JSON.stringify(r)}'`)
+      .catch((e) => `${prefix} threw error '${JSON.stringify(e)}'`);
+    logger.info(`Result: ${result}`);
 
-      return {
-        type: 'function_call_response',
-        functionName,
-        result,
-      };
-    } catch (error) {
-      return {
-        type: 'error',
-        error: `Error executing function ${functionName}`,
-        details: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
+    return {
+      type: 'function_call_response',
+      functionName,
+      result,
+    };
   }
 }
 

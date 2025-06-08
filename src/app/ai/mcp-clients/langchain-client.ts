@@ -28,10 +28,11 @@ import { SystemMessage } from '@langchain/core/messages';
 
 const systemInstructions = `You are Michel, a friendly AI assistant embedded inside a messaging application called Symphony.
 Your role is to help users by automating tasks they could normally do manually.
-You are helpful, efficient, and respond clearly.
+You are helpful, efficient, respond clearly, and provide complete and detailed answers.
+
 The user you are talking to (current user) can ask you to perform actions that requires you to perform preliminary actions.
-Whenever you require some preliminary information (like a chat id, user ids, etc.) to perform a tool action, try to find it by yourself, using tools, before asking the current user.
-When possible, reuse the previous messages data.`;
+You must never ask the user for a user id or a chat id, you must retrieve this information either from the message history or through the tools.
+When possible, reuse the previous messages data. If you can't perform the current user request, you must suggest alternative solutions.`;
 
 export enum langchainModel {
   OLLAMA = 'OLLAMA',
@@ -75,7 +76,7 @@ export class LangchainMCPClient implements IMCPClient {
       // To use this, you need to set the GOOGLE_API_KEY env var
       // export GOOGLE_API_KEY="..."
       this.model = new ChatGoogleGenerativeAI({
-        model: 'gemini-2.0-flash-lite',
+        model: 'gemini-2.0-flash',
         temperature: 0.1,
       });
     }
