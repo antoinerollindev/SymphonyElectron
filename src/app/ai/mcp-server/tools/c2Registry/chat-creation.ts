@@ -52,7 +52,7 @@ const tools: IMCPTool[] = [
   // },
   {
     name: 'displayCreateChatRoomPanel',
-    description: `Displays the chat room creation panel pre-filled with the provided users and room name, and using the provided settings. Users can only be specified by their id attribute which can .`,
+    description: `Displays the chat room creation panel pre-filled with the provided users and room name, and using the provided settings. Users can only be specified by their id. Returns the created chat id.`,
     parameters: createRoomParams,
   },
 ];

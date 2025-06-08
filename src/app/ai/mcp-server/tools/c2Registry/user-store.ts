@@ -49,7 +49,8 @@ const tools: IMCPTool[] = [
       properties: {
         query: {
           type: 'string',
-          description: 'Search query string to match against user information.',
+          description:
+            'Search query string to match against user information (id, name, email, etc.).',
         },
         maxResults: {
           type: 'number',
