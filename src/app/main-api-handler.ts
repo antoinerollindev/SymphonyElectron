@@ -611,6 +611,8 @@ ipcMain.handle(
         return windowHandler.getMainWindow()?.origin;
       case apiCmds.askSymAi:
         return mcpClient.generateResponse(arg.symAiQuestion);
+      case apiCmds.symAiMonitor:
+        return mcpClient.monitorIncomingMessages(arg.message);
       case apiCmds.showScreenSharePermissionDialog: {
         const focusedWindow = BrowserWindow.getFocusedWindow();
         if (focusedWindow && !focusedWindow.isDestroyed()) {

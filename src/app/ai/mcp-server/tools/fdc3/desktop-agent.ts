@@ -30,7 +30,7 @@ const tools: IMCPTool[] = [
             'Optional object containing an "appId" string property (use { appId: "hackathon-fdc3-note-app" } for AddNote and RemoveNote intents, otherwise use undefined)',
         },
       },
-      required: ['intent', 'context', 'appId'],
+      required: ['intent', 'context', 'target'],
     },
   },
   {

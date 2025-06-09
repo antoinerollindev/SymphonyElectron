@@ -6,6 +6,7 @@ import {
   isErrorResponse,
   isFunctionCallResponse,
   MCPResponse,
+  IMessageData,
 } from '../mcp-models';
 import { McpServer } from '../mcp-server/mcp-server';
 
@@ -108,6 +109,11 @@ export class OllamaMCPClient implements IMCPClient {
       logger.error('Error generating response:', error);
       throw error;
     }
+  }
+
+  public async monitorIncomingMessages(_data: IMessageData): Promise<string> {
+    logger.error('Not implemented for local ollama clients');
+    return '';
   }
 
   /**

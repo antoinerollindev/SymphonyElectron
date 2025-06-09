@@ -69,6 +69,13 @@ export interface IToolAndHandler {
   handler: (parameters: Record<string, any>) => any;
 }
 
+export interface IMessageData {
+  date: string;
+  from: { id: string; name: string };
+  content: string;
+  room: { id: string; name: string };
+}
+
 export interface IMCPClient {
   /**
    * initialize
@@ -79,4 +86,8 @@ export interface IMCPClient {
    * @param userInput
    */
   generateResponse(userInput: string): Promise<string>;
+  /**
+   * monitor incoming message
+   */
+  monitorIncomingMessages(data: IMessageData): Promise<string>;
 }

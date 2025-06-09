@@ -14,6 +14,7 @@ import {
   isErrorResponse,
   isFunctionCallResponse,
   MCPResponse,
+  IMessageData,
 } from '../mcp-models';
 import { McpServer } from '../mcp-server/mcp-server';
 
@@ -22,6 +23,8 @@ import { initMcpServer } from '../mcp-server';
 
 import { BaseChatModel } from '@langchain/core/dist/language_models/chat_models';
 import { SystemMessage } from '@langchain/core/messages';
+
+// import * as say from 'say';
 
 // import { RunnableSequence } from "langchain/schema/runnable";
 // import { RunnableWithMessageHistory } from "langchain/runnables";
@@ -32,7 +35,32 @@ You are helpful, efficient, respond clearly, and provide complete and detailed a
 
 The user you are talking to (current user) can ask you to perform actions that requires you to perform preliminary actions.
 You must never ask the user for a user id or a chat id, you must retrieve this information either from the message history or through the tools.
-When possible, reuse the previous messages data. If you can't perform the current user request, you must suggest alternative solutions.`;
+When possible, reuse the previous messages data. If you can't perform the current user request, you must suggest alternative solutions.
+
+---
+CONTEXT-AWARE BEHAVIOR:
+When you see "[MONITORING MODE]", analyze the message and TAKE APPROPRIATE ACTIONS using available tools. Do not generate a conversational response.
+When mode is not specified, respond normally.
+
+MESSAGE MONITORING MODE:
+Analyze incoming messages and automatically execute relevant actions:
+
+REQUIRED ACTIONS:
+- Tasks/TODOs/Reminders/Deadlines: Immediately create using FDC3 "Note" intents
+- Meeting requests: Extract details and suggest scheduling actions  
+- Stock mentions: Automatically open charts via FDC3/TradingView tools
+- Urgent items: Flag immediately with reasoning
+
+EXECUTION PRIORITY:
+1. Take action first using appropriate tools
+2. Only if no tools apply, remain silent
+3. Be proactive - if a message contains actionable content, act on it
+
+EXAMPLES:
+- "Remember to buy AAPL tomorrow" → Create todo + open AAPL chart
+- "Meeting with John at 3pm Friday" → Create calendar suggestion
+- "URGENT: Server down" → Flag as urgent + create action item
+`;
 
 export enum langchainModel {
   OLLAMA = 'OLLAMA',
@@ -50,15 +78,8 @@ export class LangchainMCPClient implements IMCPClient {
   private model: BaseChatModel;
   private tools: DynamicStructuredTool[] = [];
   private threadId: string;
-
-  // private modelName;
-  // private tools: any[] = [];
   private agent: any = null;
 
-  // TODO - Add a maximum size
-  // private history: IMessage[] = [];
-
-  // TODO - This could come from a config somewhere? SDA Settings?
   constructor(
     modelProvider: langchainModel = langchainModel.OLLAMA,
     modelName: string = 'qwen3:8b',
@@ -132,7 +153,52 @@ export class LangchainMCPClient implements IMCPClient {
         { configurable: { thread_id: this.threadId } },
       );
       const responseMessage = result.messages[result.messages.length - 1];
-      return responseMessage.content;
+      const response = responseMessage.content;
+      // say.speak(response, 'Samantha (Enhanced)');
+      return response;
+    } catch (error) {
+      logger.error('Error generating response:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Monitors incoming messages and suggests or initates actions
+   * It uses the same thread id so it uses and contributes to the LLM history
+   */
+  public async monitorIncomingMessages({
+    date,
+    from,
+    content,
+    room,
+  }: IMessageData) {
+    logger.info('Monitoring incoming message: ', {
+      content,
+      room,
+      from,
+      date,
+    });
+    if (!this.agent) {
+      throw new Error('MCP Client not initialized. Call initialize() first.');
+    }
+    try {
+      const incomingMessage = `Incoming message in ${room.name} (id: ${room.id}) at ${date}, from ${from.name} (id: ${from.id}): ${content}`;
+      // Add the new user message
+      const messages = [
+        { role: 'user', content: `[MONITORING MODE]: \n\n ${incomingMessage}` },
+      ];
+
+      // Invoke the graph
+      const result = await this.agent.invoke(
+        {
+          messages,
+        },
+        { configurable: { thread_id: this.threadId } },
+      );
+      const responseMessage = result.messages[result.messages.length - 1];
+      const response = responseMessage.content;
+      logger.info('Response from LLM: ', response);
+      return response;
     } catch (error) {
       logger.error('Error generating response:', error);
       throw error;
