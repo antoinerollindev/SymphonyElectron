@@ -5,7 +5,7 @@ const symbol = 'IChatService';
 const tools: IMCPTool[] = [
   {
     name: 'openChat',
-    description: `Opens the chat having the given id.`,
+    description: `Opens the chat having the given chat id.`,
     parameters: {
       type: 'object',
       properties: {
@@ -30,6 +30,25 @@ const tools: IMCPTool[] = [
         },
       },
       required: ['id', 'name', 'itemType', 'chatOptions'],
+    },
+  },
+  {
+    name: 'openIM',
+    description: `Opens a chat with the given user (requires the user id).`,
+    parameters: {
+      type: 'object',
+      properties: {
+        user: {
+          type: 'object',
+          description:
+            'The object containing the id of the user to open a chat with.',
+        },
+        openMode: {
+          type: 'number',
+          description: `The way to open the chat in Symphony (0 to open as a pinned module, 1 to open in default mode, 2 to open in a new tab, 3 to open a pinned tab, 4 to open next to the currently opened chats, 6 to open in a popout window)`,
+        },
+      },
+      required: ['user', 'openMode'],
     },
   },
 ];
