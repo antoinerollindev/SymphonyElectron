@@ -100,7 +100,9 @@ export class MCPServer implements ILocalMCPServerInterface {
     // result must be a string (because when chaining tool calls, tool result is injected in the message list and all messages are strings)
     const result = await handler(parameters)
       .then((r) => `${prefix} responded with '${JSON.stringify(r)}'`)
-      .catch((e) => `${prefix} threw error '${JSON.stringify(e)}'`);
+      .catch(
+        (e) => `${prefix} threw error '${e.message || JSON.stringify(e)}'`,
+      );
     logger.info(`Result: ${result}`);
 
     return {

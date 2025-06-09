@@ -108,6 +108,8 @@ const MAIN_WEB_CONTENTS_EVENTS = ['enter-full-screen', 'leave-full-screen'];
 const SHORTCUT_KEY_THROTTLE = 1000; // 1sec
 const SHORTCUT_KEY_DEBOUNCE = 300; // 0.3sec
 
+const REVIVE_COOKIE = true;
+
 export interface ICustomBrowserWindowConstructorOpts
   extends Electron.BrowserWindowConstructorOptions {
   winKey: string;
@@ -303,8 +305,9 @@ export class WindowHandler {
       this.shouldShowWelcomeScreen = true;
     }
 
-    reviveSessionCookie();
-
+    if (REVIVE_COOKIE) {
+      reviveSessionCookie();
+    }
     this.windowOpts = {
       ...this.getWindowOpts(
         {
