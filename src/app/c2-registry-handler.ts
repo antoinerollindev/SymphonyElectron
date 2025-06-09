@@ -18,7 +18,8 @@ class C2RegistryHandler {
     logger.info(command);
 
     // requires thrown errors to be converted to strings (for ipc renderer)
-    const sandboxedCall = `${command}?.catch?.((e) => e.message)`;
+    // wrap non-promise results in Promise.resolve()
+    const sandboxedCall = `Promise.resolve(${command}).catch((e) => e.message)`;
 
     return windowHandler
       .getMainWebContents()
