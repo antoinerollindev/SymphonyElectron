@@ -11,10 +11,10 @@ import { ChatOllama } from '@langchain/ollama';
 import {
   IMCPClient,
   IMCPTool,
+  IMessageData,
   isErrorResponse,
   isFunctionCallResponse,
   MCPResponse,
-  IMessageData,
 } from '../mcp-models';
 import { McpServer } from '../mcp-server/mcp-server';
 
@@ -47,7 +47,7 @@ Analyze incoming messages and automatically execute relevant actions:
 
 REQUIRED ACTIONS:
 - Tasks/TODOs/Reminders/Deadlines: Immediately create using FDC3 "Note" intents
-- Meeting requests: Extract details and suggest scheduling actions  
+- Meeting requests: Extract details and suggest scheduling actions
 - Stock mentions: Automatically open charts via FDC3/TradingView tools
 - Urgent items: Flag immediately with reasoning
 

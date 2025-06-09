@@ -1,7 +1,7 @@
 import { UUID } from 'crypto';
 import { NativeImage, Size, Tray } from 'electron';
-import { AutoUpdateTrigger } from '../app/auto-update-handler';
 import { IMessageData } from '../app/ai/mcp-models';
+import { AutoUpdateTrigger } from '../app/auto-update-handler';
 
 export enum apiCmds {
   isOnline = 'is-online',

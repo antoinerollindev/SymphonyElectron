@@ -39,8 +39,8 @@ import { DelayedFunctionQueue, throttle } from '../common/utils';
 import SSFNotificationHandler from './notification-ssf-handler';
 import { ScreenSnippetBcHandler } from './screen-snippet-bc-handler';
 
-import { speechRecognition } from './ai/speech-recognition';
 import { IMessageData } from '../app/ai/mcp-models';
+import { speechRecognition } from './ai/speech-recognition';
 
 const SUPPORTED_SETTINGS = ['flashing-notifications'];
 const MAIN_WINDOW_NAME = 'main';
