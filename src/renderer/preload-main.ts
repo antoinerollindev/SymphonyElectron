@@ -128,6 +128,7 @@ if (ssfWindow.ssf) {
 
   contextBridge.exposeInMainWorld('symAi', {
     ask: ssfWindow.ssf.askSymAi,
+    monitor: ssfWindow.ssf.symAiMonitorIncomingMessages,
   });
 
   contextBridge.exposeInMainWorld('speechRecognition', {

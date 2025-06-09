@@ -40,6 +40,7 @@ import SSFNotificationHandler from './notification-ssf-handler';
 import { ScreenSnippetBcHandler } from './screen-snippet-bc-handler';
 
 import { speechRecognition } from './ai/speech-recognition';
+import { IMessageData } from '../app/ai/mcp-models';
 
 const SUPPORTED_SETTINGS = ['flashing-notifications'];
 const MAIN_WINDOW_NAME = 'main';
@@ -1192,6 +1193,13 @@ export class SSFApi {
     return ipcRenderer.invoke(apiName.symphonyApi, {
       cmd: apiCmds.askSymAi,
       symAiQuestion,
+    });
+  }
+
+  public async symAiMonitorIncomingMessages(message: IMessageData) {
+    return ipcRenderer.invoke(apiName.symphonyApi, {
+      cmd: apiCmds.symAiMonitor,
+      message,
     });
   }
 

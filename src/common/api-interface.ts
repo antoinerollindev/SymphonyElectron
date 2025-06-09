@@ -1,6 +1,7 @@
 import { UUID } from 'crypto';
 import { NativeImage, Size, Tray } from 'electron';
 import { AutoUpdateTrigger } from '../app/auto-update-handler';
+import { IMessageData } from '../app/ai/mcp-models';
 
 export enum apiCmds {
   isOnline = 'is-online',
@@ -102,6 +103,7 @@ export enum apiCmds {
   // Sym AI commands
   askSymAi = 'ask-sym-ai',
   registryResponse = 'registry-response',
+  symAiMonitor = 'sym-ai-monitor',
 }
 
 export enum apiName {
@@ -185,6 +187,7 @@ export interface IApiArgs {
   isMiniViewEnabled: boolean;
   symAiQuestion: string;
   result: string;
+  message: IMessageData;
 }
 
 export type Themes = 'light' | 'dark';

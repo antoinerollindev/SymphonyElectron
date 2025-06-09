@@ -254,6 +254,7 @@
     "react-dom": "16.14.0",
     "rimraf": "^4.3.1",
     "save-svg-as-png": "^1.4.17",
+    "say": "^0.16.0",
     "shell-path": "^3.0.0"
   },
   "optionalDependencies": {
