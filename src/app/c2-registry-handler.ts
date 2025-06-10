@@ -14,19 +14,17 @@ class C2RegistryHandler {
     const command = `window.registry.get('${symbol}')?.['${method}']?.(${args
       ?.map((a) => JSON.stringify(a))
       .join(',')})`;
+
     logger.info(command);
-    return Promise.race([
-      windowHandler
-        .getMainWebContents()
-        ?.executeJavaScript(command)
-        .then(clean),
-      new Promise((resolve) =>
-        setTimeout(
-          () => resolve('Registry call timed out after 30 seconds'),
-          30000,
-        ),
-      ),
-    ]);
+
+    // requires thrown errors to be converted to strings (for ipc renderer)
+    // wrap non-promise results in Promise.resolve() and ensure the result is serializable (handle circular structure, functions, etc.)
+    const sandboxedCall = `Promise.resolve(${command}).then(obj => (obj === undefined || obj === null) ? obj : JSON.parse(JSON.stringify(obj, (key, value) => value instanceof Object && (value.constructor !== Object && value.constructor !== Array) ? null : value) || '{}')) .catch((e) => e.message || 'false')`;
+
+    return windowHandler
+      .getMainWebContents()
+      ?.executeJavaScript(sandboxedCall)
+      .then(clean);
   }
 }
 export const c2RegistryHandler = new C2RegistryHandler();

@@ -3,10 +3,10 @@ import { Ollama } from 'ollama';
 import {
   IMCPClient,
   IMCPTool,
+  IMessageData,
   isErrorResponse,
   isFunctionCallResponse,
   MCPResponse,
-  IMessageData,
 } from '../mcp-models';
 import { McpServer } from '../mcp-server/mcp-server';
 

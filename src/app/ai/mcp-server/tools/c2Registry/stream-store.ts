@@ -5,14 +5,15 @@ const symbol = 'IStreamStore';
 const tools: IMCPTool[] = [
   {
     name: 'searchRooms',
-    description: `Returns the information of the chats matching the given terms (name, etc.).`,
+    description: `Returns the information of the chats matching the given terms (name, etc.) - result contains all the information of the chats matching the query, including the chat id.`,
     parameters: {
       type: 'object',
       properties: {
         roomQuery: {
           type: 'object',
-          description:
-            'The room query object containing a string query property which corresponds to the search terms (result contains all the information of the chats matching the query, including the chat id).',
+          description: `The room query object containing the following properties:
+            - query: a string query property which corresponds to the search terms
+            - members: optional array of user ids, so that the search returns only chats that include these users (default value is undefined)`,
         },
         maxResults: {
           type: 'number',
@@ -21,6 +22,15 @@ const tools: IMCPTool[] = [
         },
       },
       required: ['roomQuery', 'maxResults'],
+    },
+  },
+  {
+    name: 'getStreams',
+    description: `Returns the information of the chats that the current user is a member of, including the chat id, the name, the user ids of the members and the chat type ('IM' for individual chat, 'ROOM' for chat room).`,
+    parameters: {
+      type: 'object',
+      properties: {},
+      required: [],
     },
   },
   {
