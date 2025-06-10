@@ -8,4 +8,5 @@ export { registryTools as extensionAppActionsTools } from './extension-app-actio
 export { registryTools as folderStoreTools } from './folder-store';
 export { registryTools as prepareMessageTools } from './prepare-message';
 export { registryTools as streamStoreTools } from './stream-store';
+export { registryTools as streetlinxTools } from './streetlinx';
 export { registryTools as userStoreTools } from './user-store';
