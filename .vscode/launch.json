@@ -57,7 +57,45 @@
       "outFiles": ["${workspaceFolder}/lib/**/*.js"]
     },
     {
-      "name": "Local Mana (Build & Run)",
+      "name": "Local Mana port 9080 (Build & Run)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/Electron.exe"
+      },
+      "preLaunchTask": "build",
+      "args": [".", "--url=https://local-dev.symphony.com:9080"],
+      "env": {
+        "ELECTRON_DEBUGGING": "true",
+        "ELECTRON_DEV": "true"
+      },
+      "outputCapture": "std",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/lib/**/*.js"]
+    },
+    {
+      "name": "Local Mana on port 443 (Build & Run)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/Electron.exe"
+      },
+      "preLaunchTask": "build",
+      "args": [".", "--url=https://local-dev.symphony.com"],
+      "env": {
+        "ELECTRON_DEBUGGING": "true",
+        "ELECTRON_DEV": "true"
+      },
+      "outputCapture": "std",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/lib/**/*.js"]
+    },
+    {
+      "name": "Corp local Mana (Build & Run)",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
