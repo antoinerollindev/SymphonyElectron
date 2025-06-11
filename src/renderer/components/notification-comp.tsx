@@ -26,6 +26,7 @@ interface INotificationState {
   isUpdated: boolean;
   theme: Theme;
   hasIgnore: boolean;
+  hasAccept: boolean;
   hasReply: boolean;
   hasMention: boolean;
   isInputHidden: boolean;
@@ -54,6 +55,7 @@ export default class NotificationComp extends React.Component<
     onClick: (data) => (_event: mouseEventButton) => this.click(data),
     onContextMenu: (event) => this.contextMenu(event),
     onIgnore: (winKey) => (_event: mouseEventButton) => this.onIgnore(winKey),
+    onAccept: (winKey) => (_event: mouseEventButton) => this.onAccept(winKey),
     onMouseEnter: (winKey) => (_event: mouseEventButton) =>
       this.onMouseEnter(winKey),
     onMouseLeave: (winKey) => (_event: mouseEventButton) =>
@@ -81,6 +83,7 @@ export default class NotificationComp extends React.Component<
       isUpdated: false,
       theme: '',
       isInputHidden: true,
+      hasAccept: false,
       hasIgnore: false,
       hasReply: false,
       hasMention: false,
@@ -159,6 +162,7 @@ export default class NotificationComp extends React.Component<
       isFederatedEnabled,
     );
     containerCssClass += customCssClasses.join(' ');
+    console.log(`title ${title}`);
     return (
       <div
         data-testid='NOTIFICATION_CONTAINER'
@@ -197,6 +201,7 @@ export default class NotificationComp extends React.Component<
                 {this.renderExtBadge(isExternal)}
               </div>
               {this.renderReplyButton(id, themeClassName)}
+              {this.renderAcceptButton(id, themeClassName)}
               {this.renderIgnoreButton(id, themeClassName)}
             </div>
             <div className={`message-preview ${themeClassName}`}>
@@ -336,6 +341,7 @@ export default class NotificationComp extends React.Component<
    */
   private close(event: any, id: number): void {
     event.stopPropagation();
+    console.log('close notification from notification comp');
     ipcRenderer.send('close-notification', id);
   }
 
@@ -387,6 +393,10 @@ export default class NotificationComp extends React.Component<
    */
   private onIgnore(id: number): void {
     ipcRenderer.send('notification-on-ignore', id);
+  }
+
+  private onAccept(id: number): void {
+    ipcRenderer.send('notification-on-accept', id);
   }
 
   /**
@@ -529,6 +539,24 @@ export default class NotificationComp extends React.Component<
    * @param id
    * @param theming
    */
+  private renderAcceptButton(
+    id: number,
+    theming: string,
+  ): JSX.Element | undefined {
+    if (this.state.hasAccept) {
+      return (
+        <button
+          className={`action-button ${theming} accept`}
+          style={{ display: 'block' }}
+          onClick={this.eventHandlers.onAccept(id)}
+        >
+          {'Accept'}
+        </button>
+      );
+    }
+    return;
+  }
+
   private renderIgnoreButton(
     id: number,
     theming: string,

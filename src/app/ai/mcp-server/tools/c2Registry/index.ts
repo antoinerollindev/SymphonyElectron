@@ -10,3 +10,4 @@ export { registryTools as prepareMessageTools } from './prepare-message';
 export { registryTools as streamStoreTools } from './stream-store';
 export { registryTools as streetlinxTools } from './streetlinx';
 export { registryTools as userStoreTools } from './user-store';
+export { registryTools as suggestionServiceTools } from './suggestion-service';

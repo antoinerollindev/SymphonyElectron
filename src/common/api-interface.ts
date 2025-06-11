@@ -317,6 +317,7 @@ export interface INotificationData {
   isElectronNotification?: boolean;
   callback?: () => void;
   hasIgnore?: boolean;
+  hasAccept?: boolean;
   hasReply?: boolean;
   hasMention?: boolean;
   isFederatedEnabled?: boolean;
