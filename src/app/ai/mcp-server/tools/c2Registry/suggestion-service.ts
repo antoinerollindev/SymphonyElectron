@@ -5,10 +5,12 @@ const symbol = 'SuggestionService';
 const tools: IMCPTool[] = [
   {
     name: 'showTickerWorkspaceCreationSuggestion',
-    description: `Displays a notification in Symphony to suggest the user to open a workspace related to a ticker. The workspace will contain the ticker chart, buyer/seller interested in the ticker and prepare a blast message.
-    The notification has an Accept button. If the user clicks on it, the workspace will be created.
+    description: `Displays a notification in Symphony to suggest the user to create a workspace related to a ticker.
+
     All parameters are required.
-    This tool should be called if the user receives a message containing a ticker code and #hot`,
+
+    This tool should be called if the user receives a message containing a ticker code and #hot
+    This tool should never be called when the user asks by himself to create a workspace.`,
     parameters: {
       type: 'object',
       properties: {

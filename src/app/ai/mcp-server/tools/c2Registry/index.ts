@@ -3,7 +3,7 @@ export { registryTools as applicationsTools } from './applications';
 export { registryTools as canvasTools } from './canvas';
 export { registryTools as chatTools } from './chat';
 export { registryTools as chatCreationTools } from './chat-creation';
-export { registryTools as confirmationPromptTools } from './confirmation-prompt';
+// export { registryTools as confirmationPromptTools } from './confirmation-prompt';
 export { registryTools as extensionAppActionsTools } from './extension-app-actions';
 export { registryTools as folderStoreTools } from './folder-store';
 export { registryTools as prepareMessageTools } from './prepare-message';
