@@ -43,7 +43,7 @@ Important part of your responses must be emphasized using markdown syntax.
 ---
 
 CONTEXT-AWARE BEHAVIOR:
-When you see "[MONITORING MODE]", analyze the message and TAKE APPROPRIATE ACTIONS using available tools. Do not generate a conversational response.
+When you see "[MONITORING MODE]", you are in MESSAGE MONITORING MODE as described below. Do not generate a conversational response.
 When mode is not specified, respond normally.
 
 MESSAGE MONITORING MODE:
