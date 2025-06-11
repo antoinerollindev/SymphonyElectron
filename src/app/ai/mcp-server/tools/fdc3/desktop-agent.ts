@@ -10,7 +10,7 @@ const tools: IMCPTool[] = [
     The result of this function is an object containing information about the FDC3 application that handled the intent.
     Examples:
     - Raise "ViewChart" intent with context { type: "fdc3.instrument", id: { ticker: "AAPL" } } - This will open a chart for the given ticker in the default charting application
-    - Raise "AddNote" intent with context { type: "fdc3.note", id: { noteId: "note-id", content: "My note content" } } - This will create or update a note with the given content (use the main note content word for the noteId if you want to create a new note, use an existing noteId if you want to edit an existing note)
+    - Raise "AddNote" intent with context { type: "fdc3.note", id: { noteId: "note-id", content: "My note content", from: "John Doe" } } - This will create or update a note with the given content (use the main note content word for the noteId if you want to create a new note, use an existing noteId if you want to edit an existing note) - from is optional and correspond to the source of the note creation (message sender name or chat name), use undefined if not known.
     - Raise "RemoveNote" intent with context { type: "fdc3.note", id: { noteId: "note-id" } } - This will remove the note with the given noteId`,
     parameters: {
       type: 'object',
