@@ -5,8 +5,8 @@ const symbol = 'IPrepareMessageService';
 const tools: IMCPTool[] = [
   {
     name: 'sendMessage',
-    description: `Sends a given message to the provided recipients (chats or users).
-    If the response is an empty object or an empty array, it means the sending of the message failed or the current user cancelled the action.`,
+    description: `Prepares a given message to the provided recipients (chats or users).
+    This only prefills the the message broadcast form, with selected users or chats, and a message to be sent. The current user will have to manually click on the send button, so you do not need a confirmation before this action.`,
     parameters: {
       type: 'object',
       properties: {
